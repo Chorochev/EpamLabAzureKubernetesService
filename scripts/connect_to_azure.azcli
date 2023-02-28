@@ -1,0 +1,5 @@
+# Connect to Azure
+az login
+# az account list
+# az account set --subscription="SUBSCRIPTION_ID"
+# az account set --name "Visual Studio Professional Subscription Aleksei Khoroshev"

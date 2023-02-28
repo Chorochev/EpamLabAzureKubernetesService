@@ -1,0 +1,2 @@
+# Create a resource group.
+az group create --name $resourceGroupName --location "$location"
