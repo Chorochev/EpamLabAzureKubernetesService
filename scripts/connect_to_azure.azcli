@@ -1,0 +1,14 @@
+# Connect to Azure
+az login
+# az account list
+# az account set --subscription="SUBSCRIPTION_ID"
+# az account set --name "Visual Studio Professional Subscription Aleksei Khoroshev"
+
+# Check providers
+
+az provider show -n Microsoft.OperationsManagement -o table
+az provider show -n Microsoft.OperationalInsights -o table
+
+# # If they are not registered
+# az provider register --namespace Microsoft.OperationsManagement
+# az provider register --namespace Microsoft.OperationalInsights
