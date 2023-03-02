@@ -16,20 +16,9 @@ az aks create `
     --resource-group $resourceGroupName `
     --node-resource-group $nodeResourceGroupName `
     --name $AKSClusterName `
-    --enable-managed-identity `
-    --vm-set-type VirtualMachineScaleSets `
+    --nodepool-name "nodepool1" `
     --node-count 1 `
-    --enable-addons monitoring `
-    --enable-msi-auth-for-monitoring `
     --generate-ssh-keys `
-    --load-balancer-sku standard 
-
-# Connect to the cluster
-# 1) Install kubectl locally 
-az aks install-cli
-
-# 2) Configure kubectl to connect to your Kubernetes cluster
-az aks get-credentials --resource-group $resourceGroupName --name $AKSClusterName --file .kube\config
-
-# 3) Verify the connection
-kubectl get nodes
+    --load-balancer-sku standard `
+    --node-vm-size Standard_B2s `
+    --os-sku Ubuntu
