@@ -22,3 +22,14 @@ az aks create `
     --load-balancer-sku standard `
     --node-vm-size Standard_B2s `
     --os-sku Ubuntu
+
+#############################################################################
+Write-Host "Add node pools." -Foreground Green
+az aks nodepool add `
+    --cluster-name $AKSClusterName `
+    --name "nodepool2" `
+    --resource-group $resourceGroupName `
+    --node-count 2 `
+    --node-vm-size Standard_B2s `
+    --os-sku Ubuntu
+ 
