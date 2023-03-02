@@ -8,7 +8,11 @@ $AKSClusterName = "aks-$workload-$environment-$location-$instance"
 
 #############################################################################
 Write-Host "Create a resource group: $resourceGroupName" -Foreground Green
-az group create --name $resourceGroupName --location "$location"
+az group create --name $resourceGroupName --location $location
+
+#############################################################################
+Write-Host "Create a network watcher" -Foreground Green
+az network watcher configure --resource-group $resourceGroupName --locations $location --enabled
 
 #############################################################################
 Write-Host "Create AKS cluster: $AKSClusterName" -Foreground Green
@@ -29,7 +33,10 @@ az aks create `
 az aks install-cli
 
 # 2) Configure kubectl to connect to your Kubernetes cluster
-az aks get-credentials --resource-group $resourceGroupName --name $AKSClusterName --file .kube\config
+az aks get-credentials --resource-group $resourceGroupName --name $AKSClusterName 
 
 # 3) Verify the connection
 kubectl get nodes
+
+# 4) Deploy the application
+kubectl apply -f azure-vote.yaml
