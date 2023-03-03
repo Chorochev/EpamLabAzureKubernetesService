@@ -41,3 +41,17 @@ az acr create `
     --resource-group $resourceGroupName `
     --sku Basic `
     --admin-enabled true
+
+############################################################################
+# Push this image into your ACR (Azure Container registry)
+# Login to ACR
+az login
+az acr login --name $containerRegistryName 
+
+# Create a tag for the image
+docker tag python-docker acrkubeepamlabdeveastus01.azurecr.io/python-docker:v1
+# Download the image to ACR
+docker push acrkubeepamlabdeveastus01.azurecr.io/python-docker:v1
+
+# List images of ACR
+az acr repository list --name acrkubeepamlabdeveastus01.azurecr.io --output table
