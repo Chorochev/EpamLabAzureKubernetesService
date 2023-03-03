@@ -5,6 +5,7 @@ $instance = "01"
 $resourceGroupName = "rg-$workload-$environment-$location-$instance"
 $nodeResourceGroupName = "rgnode-$workload-$environment-$location-$instance"
 $AKSClusterName = "aks-$workload-$environment-$location-$instance"
+$containerRegistryName = "acr$workload$environment$location$instance".ToLower()
 
 #############################################################################
 Write-Host "Create a resource group: $resourceGroupName" -Foreground Green
@@ -32,4 +33,11 @@ az aks nodepool add `
     --node-count 2 `
     --node-vm-size Standard_B2s `
     --os-sku Ubuntu
- 
+
+############################################################################
+Write-Host "Create an Azure Container Registry." -Foreground Green
+az acr create `
+    --name $containerRegistryName `
+    --resource-group $resourceGroupName `
+    --sku Basic `
+    --admin-enabled true
