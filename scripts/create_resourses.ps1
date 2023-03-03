@@ -55,3 +55,10 @@ docker push acrkubeepamlabdeveastus01.azurecr.io/python-docker:v1
 
 # List images of ACR
 az acr repository list --name acrkubeepamlabdeveastus01.azurecr.io --output table
+
+############################################################################
+Write-Host "Attach AKS to ACR." -Foreground Green
+az aks update `
+    --name $AKSClusterName `
+    --resource-group $resourceGroupName `
+    --attach-acr $containerRegistryName 
