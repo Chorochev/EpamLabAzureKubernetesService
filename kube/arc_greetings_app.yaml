@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: python-docker
+  labels:
+    purpose: python-docker
+spec:
+  containers:
+    - name: python-docker-container
+      image: acrkubeepamlabdeveastus01.azurecr.io/python-docker:v1
