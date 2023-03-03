@@ -6,6 +6,7 @@ $resourceGroupName = "rg-$workload-$environment-$location-$instance"
 $nodeResourceGroupName = "rgnode-$workload-$environment-$location-$instance"
 $AKSClusterName = "aks-$workload-$environment-$location-$instance"
 $containerRegistryName = "acr$workload$environment$location$instance".ToLower()
+$manifestsK8s = "arc_greetings_app.yaml"
 
 #############################################################################
 Write-Host "Create a resource group: $resourceGroupName" -Foreground Green
@@ -62,3 +63,17 @@ az aks update `
     --name $AKSClusterName `
     --resource-group $resourceGroupName `
     --attach-acr $containerRegistryName 
+
+############################################################################
+# Go to '..\EpamLabAzureKubernetesService\kube\'
+# Deploy python App service to the cluster using attached k8s manifests
+az aks command invoke `
+    --name $AKSClusterName `
+    --resource-group $resourceGroupName `
+    --command "kubectl apply -f $manifestsK8s -n default" `
+    --file $manifestsK8s
+# Cheking
+az aks command invoke `
+    --name $AKSClusterName `
+    --resource-group $resourceGroupName `
+    --command "kubectl get pods"
