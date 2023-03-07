@@ -23,3 +23,14 @@ kubectl port-forward pythonapp 9000:5000
 # http://localhost:9000
 
 kubectl delete -f pythonapp_pod.yaml
+
+#########################################################
+# create two containers
+kubectl apply -f two_containers.yaml
+
+kubectl port-forward web-app 7000:80
+# http://localhost:7000
+kubectl port-forward web-app 7000:5000
+# http://localhost:7000
+
+kubectl delete -f two_containers.yaml
