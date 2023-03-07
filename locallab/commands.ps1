@@ -10,7 +10,7 @@ kubectl describe pods web-app
 kubectl port-forward web-app 7000:80
 # http://localhost:7000
 
-kubectl delete pods web-app
+kubectl delete -f web_pod.yaml
 
 #########################################################
 # create the pod - chorochev/simple-python-app-service
@@ -22,4 +22,4 @@ kubectl describe pods pythonapp
 kubectl port-forward pythonapp 9000:5000
 # http://localhost:9000
 
-kubectl delete pods pythonapp
+kubectl delete -f pythonapp_pod.yaml
