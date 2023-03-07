@@ -5,9 +5,7 @@ docker build --file DockerFile --tag python-docker .
 docker images
 
 # Run image
-docker run --publish 8080:32080 python-docker
-
-# http://localhost:8000
+docker run --publish 8080:5000 python-docker
 
 # Stop a docker container
 docker stop python-docker
