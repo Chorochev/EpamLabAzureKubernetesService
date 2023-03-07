@@ -9,6 +9,7 @@ kubectl rollout status deployment/webapp-deployment
 kubectl rollout undo deployment/webapp-deployment
 kubectl rollout restart deployment/webapp-deployment
 kubectl delete deployment webapp-deployment
+kubectl delete hpa webapp-deployment
 
 #########################################################
 # create the deployment - httpd
