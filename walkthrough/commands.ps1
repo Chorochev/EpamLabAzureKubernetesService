@@ -33,6 +33,10 @@ Write-Host "Checking" -Foreground Green
 kubectl get nodes
 
 #############################################################################
+# Create a tag for the image
+docker tag python-docker aks-kubeep-rg-kubeepamlab-d-07f295-mpv2kksf.hcp.eastus.azmk8s.io/python-docker:v1
+
+#############################################################################
 Write-Host "Deploy the application" -Foreground Green
 kubectl apply -f azure-vote.yaml
 
