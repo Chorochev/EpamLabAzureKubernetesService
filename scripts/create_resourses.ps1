@@ -19,21 +19,21 @@ az aks create `
     --node-resource-group $nodeResourceGroupName `
     --name $AKSClusterName `
     --nodepool-name "nodepool1" `
-    --node-count 1 `
+    --node-count 2 `
     --generate-ssh-keys `
     --load-balancer-sku standard `
     --node-vm-size Standard_B2s `
     --os-sku Ubuntu
 
 #############################################################################
-Write-Host "Add node pools." -Foreground Green
-az aks nodepool add `
-    --cluster-name $AKSClusterName `
-    --name "nodepool2" `
-    --resource-group $resourceGroupName `
-    --node-count 2 `
-    --node-vm-size Standard_B2s `
-    --os-sku Ubuntu
+# Write-Host "Add node pools." -Foreground Green
+# az aks nodepool add `
+#     --cluster-name $AKSClusterName `
+#     --name "nodepool2" `
+#     --resource-group $resourceGroupName `
+#     --node-count 2 `
+#     --node-vm-size Standard_B2s `
+#     --os-sku Ubuntu
 
 ############################################################################
 Write-Host "Create an Azure Container Registry." -Foreground Green
@@ -66,6 +66,7 @@ az aks update `
 
 ############################################################################
 # Go to '..\EpamLabAzureKubernetesService\kube\'
+Set-Location ..\kube\
 # Deploy python App service to the cluster using attached k8s manifests
 az aks command invoke `
     --name $AKSClusterName `
@@ -76,4 +77,15 @@ az aks command invoke `
 az aks command invoke `
     --name $AKSClusterName `
     --resource-group $resourceGroupName `
-    --command "kubectl get pods"
+    --command "kubectl get pods -o wide"
+
+az aks command invoke `
+    --name $AKSClusterName `
+    --resource-group $resourceGroupName `
+    --command "kubectl get service python-docker-front --watch"
+
+az aks command invoke `
+    --name $AKSClusterName `
+    --resource-group $resourceGroupName `
+    --command "kubectl get services python-docker-front"
+    
