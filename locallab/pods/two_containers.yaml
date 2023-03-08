@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web-app
+  labels:
+    name: web-app
+spec:
+  containers:
+    - name: web-app
+      image: httpd:latest
+      resources:
+        limits:
+          memory: "128Mi"
+          cpu: "500m"
+      ports:
+        - containerPort: 80
+
+    - name: pythonapp
+      image: chorochev/simple-python-app-service:latest
+      resources:
+        limits:
+          memory: "128Mi"
+          cpu: "500m"
+      ports:
+        - containerPort: 5000
