@@ -68,10 +68,22 @@ az aks update `
     --attach-acr $containerRegistryName 
 
 ############################################################################
+az login
+az aks get-credentials --resource-group $resourceGroupName --name $AKSClusterName
+
 # Go to '..\EpamLabAzureKubernetesService\kube\'
 Set-Location ..\kube\
 kubectl apply -f $manifestsK8s -n default
 kubectl delete -f $manifestsK8s
+
+# cheking
+kubectl get nodes
+kubectl get pods
+kubectl get deployments
+kubectl get rs
+kubectl get hpa # autoscaling 
+# kubectl get services
+kubectl get svc
 
 # # Deploy python App service to the cluster using attached k8s manifests
 # az aks command invoke `
