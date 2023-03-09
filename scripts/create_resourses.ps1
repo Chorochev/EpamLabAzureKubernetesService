@@ -46,15 +46,18 @@ az acr create `
 ############################################################################
 # Push this image into your ACR (Azure Container registry)
 # Login to ACR
-az login
+# az login
+# az aks get-credentials --resource-group $resourceGroupName --name $AKSClusterName
 az acr login --name $containerRegistryName 
 
-# Create a tag for the image
-docker tag python-docker acrkubeepamlabdeveastus01.azurecr.io/python-docker:v1
-# Download the image to ACR
-docker push acrkubeepamlabdeveastus01.azurecr.io/python-docker:v1
+# # Create a tag for the image
+docker images
+docker tag chorochev/simple-python-app-service acrkubeepamlabdeveastus01.azurecr.io/greetingapp:latest
+# # Download the image to ACR
+docker push acrkubeepamlabdeveastus01.azurecr.io/greetingapp:latest
+# docker push acrkubeepamlabdeveastus01.azurecr.io/httpd:latest
 
-# List images of ACR
+# # List images of ACR
 az acr repository list --name acrkubeepamlabdeveastus01.azurecr.io --output table
 
 ############################################################################
@@ -67,25 +70,29 @@ az aks update `
 ############################################################################
 # Go to '..\EpamLabAzureKubernetesService\kube\'
 Set-Location ..\kube\
-# Deploy python App service to the cluster using attached k8s manifests
-az aks command invoke `
-    --name $AKSClusterName `
-    --resource-group $resourceGroupName `
-    --command "kubectl apply -f $manifestsK8s -n default" `
-    --file $manifestsK8s
-# Cheking
-az aks command invoke `
-    --name $AKSClusterName `
-    --resource-group $resourceGroupName `
-    --command "kubectl get pods -o wide"
+kubectl apply -f $manifestsK8s -n default
+kubectl delete -f $manifestsK8s
 
-az aks command invoke `
-    --name $AKSClusterName `
-    --resource-group $resourceGroupName `
-    --command "kubectl get service python-docker-front --watch"
+# # Deploy python App service to the cluster using attached k8s manifests
+# az aks command invoke `
+#     --name $AKSClusterName `
+#     --resource-group $resourceGroupName `
+#     --command "kubectl apply -f $manifestsK8s -n default" `
+#     --file $manifestsK8s
 
-az aks command invoke `
-    --name $AKSClusterName `
-    --resource-group $resourceGroupName `
-    --command "kubectl get services python-docker-front"
+# # Cheking
+# az aks command invoke `
+#     --name $AKSClusterName `
+#     --resource-group $resourceGroupName `
+#     --command "kubectl get pods -o wide"
+
+# az aks command invoke `
+#     --name $AKSClusterName `
+#     --resource-group $resourceGroupName `
+#     --command "kubectl get service python-docker-front --watch"
+
+# az aks command invoke `
+#     --name $AKSClusterName `
+#     --resource-group $resourceGroupName `
+#     --command "kubectl get services python-docker-front"
     
