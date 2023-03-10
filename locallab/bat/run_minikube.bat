@@ -11,7 +11,7 @@ timeout /t 35
 
 ECHO Running minikube
 
-cmd /c minikube start
+cmd /c minikube start --vm-driver="docker"
 
 ECHO Checking minikube
 
