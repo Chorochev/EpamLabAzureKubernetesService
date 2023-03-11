@@ -11,6 +11,8 @@ spec:
       labels:
         app: greetings
     spec:
+      nodeSelector:
+        tier: frontend
       containers:
         - name: greetings
           image: chorochev/greetings:v4
@@ -70,6 +72,8 @@ spec:
       labels:
         app: redis
     spec:
+      nodeSelector:
+        tier: frontend
       containers:
         - name: redis
           image: redis:latest
