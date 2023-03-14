@@ -15,13 +15,21 @@ spec:
         tier: frontend
       containers:
         - name: greetings
-          image: chorochev/greetings:v4
+          image: chorochev/greetings:latest
           resources:
             limits:
               memory: "100Mi"
               cpu: "100m"
           ports:
             - containerPort: 5000
+          volumeMounts:
+            - name: my-volume-name
+              mountPath: /app/config.conf
+              subPath: config.conf
+      volumes:
+        - name: my-volume-name
+          configMap:
+            name: my-configmap-name          
 
 ---
 apiVersion: autoscaling/v2
@@ -111,3 +119,13 @@ spec:
       targetPort: 6379
   selector:
     app: redis
+
+--- 
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-configmap-name
+  namespace: default
+data:
+  config.conf: |
+    Aleksei Khoroshev
