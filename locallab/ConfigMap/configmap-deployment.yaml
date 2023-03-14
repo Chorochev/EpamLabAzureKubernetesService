@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-configmap-name
+  namespace: default
+data:
+  myname.txt: |
+    Aleksei Khoroshev
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp
+spec:
+  selector:
+    matchLabels:
+      app: webapp
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      containers:
+        - name: webapp
+          image: chorochev/greetings:latest
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: my-volume-name
+              mountPath: /app/myname.txt
+              subPath: myname.txt
+      volumes:
+        - name: my-volume-name
+          configMap:
+            name: my-configmap-name
