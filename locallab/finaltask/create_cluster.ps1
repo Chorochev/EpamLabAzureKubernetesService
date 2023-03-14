@@ -10,6 +10,9 @@ kubectl get deploy
 kubectl get svc
 kubectl get pods --output=wide
 
+kubectl describe pod greetings-69494fdd59-pjdn4
+kubectl logs greetings-69494fdd59-pjdn4
+
 #########################################################
 # Add a label to a node
 # # "frontend"
@@ -25,6 +28,7 @@ kubectl apply -f greetings-app.yaml
 # delete the deployment
 kubectl delete -f greetings-app.yaml
 
+
 #########################################################
 # checking
 # kubectl port-forward webapp-dd9d6c7c5-dhmnb 7000:80
@@ -33,4 +37,4 @@ kubectl delete -f greetings-app.yaml
 # kubectl delete pods greetings-app 
 # kubectl describe deployment pythonapp
 # kubectl describe pod redis-746f7f84f6-5pngc
-kubectl exec -it redis-746f7f84f6-jnmhf sh
+kubectl exec -it greetings-6c7d78d9f5-xs9vt sh

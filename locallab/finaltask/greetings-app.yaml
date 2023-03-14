@@ -16,6 +16,18 @@ spec:
       containers:
         - name: greetings
           image: chorochev/greetings:latest
+          env:
+            - name: "NAME1"
+              valueFrom:   
+                configMapKeyRef:
+                  name: my-configmap-name-test
+                  key: NAME1
+          # command: ["/bin/sh"]
+          # # args: ["-c", "export NAME=Aleksei_Khoroshev"]
+          # args: ["-c", "while true; do echo hello; sleep 10;done"]
+          # command: ['sh', '-c', 'echo The app is running!']
+          # command: ["/bin/sh"]
+          # args: [". ./config"]
           resources:
             limits:
               memory: "100Mi"
@@ -24,8 +36,8 @@ spec:
             - containerPort: 5000
           volumeMounts:
             - name: my-volume-name
-              mountPath: /app/config.conf
-              subPath: config.conf
+              mountPath: /app/config
+              subPath: config
       volumes:
         - name: my-volume-name
           configMap:
@@ -127,5 +139,13 @@ metadata:
   name: my-configmap-name
   namespace: default
 data:
-  config.conf: |
-    Aleksei Khoroshev
+  config: |
+    NAME="Aleksei Khoroshev"
+
+--- 
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-configmap-name-test
+data:
+  NAME1: ALEXSEY
