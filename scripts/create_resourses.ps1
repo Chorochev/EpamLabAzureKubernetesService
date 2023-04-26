@@ -9,7 +9,11 @@ $containerRegistryName = "acr$workload$environment$location$instance".ToLower()
 
 #############################################################################
 Write-Host "Create a resource group: $resourceGroupName" -Foreground Green
-az group create --name $resourceGroupName --location "$location"
+az group create --name $resourceGroupName --location $location
+
+#############################################################################
+Write-Host "Create a network watcher" -Foreground Green
+az network watcher configure --resource-group $resourceGroupName --locations $location --enabled
 
 #############################################################################
 Write-Host "Create AKS cluster: $AKSClusterName" -Foreground Green
@@ -47,6 +51,15 @@ az acr create `
 # Login to ACR
 az login
 az acr login --name $containerRegistryName 
+
+# 2) Configure kubectl to connect to your Kubernetes cluster
+az aks get-credentials --resource-group $resourceGroupName --name $AKSClusterName 
+
+# 3) Verify the connection
+kubectl get nodes
+
+# 4) Deploy the application
+kubectl apply -f azure-vote.yaml
 
 # Create a tag for the image
 docker tag python-docker acrkubeepamlabdeveastus01.azurecr.io/python-docker:v1
