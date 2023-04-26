@@ -53,10 +53,17 @@ def get_redis_div():
         strRedis = 'Greetings from ' + name + \
             ' %s times!!!' % redis.get('hits')
         body = "<div>"
-        body += str(strRedis)
+        body += strRedis
         body += "</div>"
         return body
     except Exception as e:
         body = "<h3><p style='color:rgb(255,0,0);'>Redis Error</p></h3></br>"
         body += "<div>" + str(e) + "</div>"
         return body
+
+
+@app.route('/connecttoredis')
+def connecttoredis():
+    name = os.environ.get('NAME')
+    redis.incr('hits')
+    return 'Greetings from ' + name + ' %s times!!!' % redis.get('hits')

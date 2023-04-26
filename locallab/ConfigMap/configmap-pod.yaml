@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configmap-name
+  namespace: default
+data:
+  MYEPAMLABNAME: "Aleksei Khoroshev"
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web-app
+  labels:
+    name: web-app
+spec:
+  containers:
+    - name: web-app
+      image: httpd:latest
+      env:
+        - name: MYEPAMLABNAME
+          valueFrom:
+            configMapKeyRef:
+              name: configmap-name
+              key: MYEPAMLABNAME
+      resources:
+        limits:
+          memory: "128Mi"
+          cpu: "500m"
+      ports:
+        - containerPort: 80

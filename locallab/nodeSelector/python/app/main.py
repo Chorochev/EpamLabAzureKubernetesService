@@ -1,15 +1,16 @@
-import socket
 from flask import Flask
 from redis import Redis
 import os
+import socket
 
 app = Flask(__name__)
 redis = Redis(host='redis', port=6379)
 
+name = os.environ.get('NAME')
 
 @app.route('/')
 def hello():
-    try:
+    try:        
         body = "<!DOCTYPE html><html><head><title>EpamLabKubernetes - Python AppService.</title></head><body>"
         body += "<h1><p style='color:rgb(25,200,25);'>Python AppService</p></h1>"
         body += "<h2><p>Aleksei Khoroshev</p></h2>"
@@ -47,8 +48,7 @@ def get_hostname_div():
 
 
 def get_redis_div():
-    try:
-        name = os.environ.get('NAME')
+    try:        
         redis.incr('hits')
         strRedis = 'Greetings from ' + name + \
             ' %s times!!!' % redis.get('hits')
@@ -60,3 +60,13 @@ def get_redis_div():
         body = "<h3><p style='color:rgb(255,0,0);'>Redis Error</p></h3></br>"
         body += "<div>" + str(e) + "</div>"
         return body
+
+
+@app.route('/connecttoredis')
+def connecttoredis():
+    redis.incr('hits')
+    return 'Greetings from ' + name + ' %s times!!!' % redis.get('hits')
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", debug=True)
