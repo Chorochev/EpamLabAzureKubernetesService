@@ -5,7 +5,7 @@ docker build --file DockerFile --tag python-docker .
 docker images
 
 # Run image
-docker run --publish 8000:5000 python-docker
+docker run --publish 8080:32080 python-docker
 
 # http://localhost:8000
 

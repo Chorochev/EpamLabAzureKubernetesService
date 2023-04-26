@@ -6,6 +6,7 @@ $resourceGroupName = "rg-$workload-$environment-$location-$instance"
 $nodeResourceGroupName = "rgnode-$workload-$environment-$location-$instance"
 $AKSClusterName = "aks-$workload-$environment-$location-$instance"
 $containerRegistryName = "acr$workload$environment$location$instance".ToLower()
+$manifestsK8s = "arc_greetings_app.yaml"
 
 #############################################################################
 Write-Host "Create a resource group: $resourceGroupName" -Foreground Green
@@ -18,21 +19,21 @@ az aks create `
     --node-resource-group $nodeResourceGroupName `
     --name $AKSClusterName `
     --nodepool-name "nodepool1" `
-    --node-count 1 `
+    --node-count 2 `
     --generate-ssh-keys `
     --load-balancer-sku standard `
     --node-vm-size Standard_B2s `
     --os-sku Ubuntu
 
 #############################################################################
-Write-Host "Add node pools." -Foreground Green
-az aks nodepool add `
-    --cluster-name $AKSClusterName `
-    --name "nodepool2" `
-    --resource-group $resourceGroupName `
-    --node-count 2 `
-    --node-vm-size Standard_B2s `
-    --os-sku Ubuntu
+# Write-Host "Add node pools." -Foreground Green
+# az aks nodepool add `
+#     --cluster-name $AKSClusterName `
+#     --name "nodepool2" `
+#     --resource-group $resourceGroupName `
+#     --node-count 2 `
+#     --node-vm-size Standard_B2s `
+#     --os-sku Ubuntu
 
 ############################################################################
 Write-Host "Create an Azure Container Registry." -Foreground Green
@@ -55,3 +56,36 @@ docker push acrkubeepamlabdeveastus01.azurecr.io/python-docker:v1
 
 # List images of ACR
 az acr repository list --name acrkubeepamlabdeveastus01.azurecr.io --output table
+
+############################################################################
+Write-Host "Attach AKS to ACR." -Foreground Green
+az aks update `
+    --name $AKSClusterName `
+    --resource-group $resourceGroupName `
+    --attach-acr $containerRegistryName 
+
+############################################################################
+# Go to '..\EpamLabAzureKubernetesService\kube\'
+Set-Location ..\kube\
+# Deploy python App service to the cluster using attached k8s manifests
+az aks command invoke `
+    --name $AKSClusterName `
+    --resource-group $resourceGroupName `
+    --command "kubectl apply -f $manifestsK8s -n default" `
+    --file $manifestsK8s
+# Cheking
+az aks command invoke `
+    --name $AKSClusterName `
+    --resource-group $resourceGroupName `
+    --command "kubectl get pods -o wide"
+
+az aks command invoke `
+    --name $AKSClusterName `
+    --resource-group $resourceGroupName `
+    --command "kubectl get service python-docker-front --watch"
+
+az aks command invoke `
+    --name $AKSClusterName `
+    --resource-group $resourceGroupName `
+    --command "kubectl get services python-docker-front"
+    

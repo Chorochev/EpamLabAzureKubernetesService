@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-docker-back
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: python-docker-back
+  template:
+    metadata:
+      labels:
+        app: python-docker-back
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+        - name: python-docker-back
+          image: acrkubeepamlabdeveastus01.azurecr.io/python-docker:v1
+          env:
+            - name: ALLOW_EMPTY_PASSWORD
+              value: "yes"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          ports:
+            - containerPort: 32080
+              name: redis
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: python-docker-back
+spec:
+  ports:
+    - port: 32080
+  selector:
+    app: python-docker-back
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-docker-front
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: python-docker-front
+  template:
+    metadata:
+      labels:
+        app: python-docker-front
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+        - name: python-docker-front
+          image: acrkubeepamlabdeveastus01.azurecr.io/python-docker:v1
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          ports:
+            - containerPort: 80
+          env:
+            - name: REDIS
+              value: "python-docker-back"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: python-docker-front
+spec:
+  type: LoadBalancer
+  ports:
+    - nodePort: 32080
+      port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: python-docker-front
