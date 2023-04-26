@@ -5,6 +5,7 @@ $instance = "01"
 $resourceGroupName = "rg-$workload-$environment-$location-$instance"
 $nodeResourceGroupName = "rgnode-$workload-$environment-$location-$instance"
 $AKSClusterName = "aks-$workload-$environment-$location-$instance"
+$containerRegistryName = "acr$workload$environment$location$instance".ToLower()
 
 #############################################################################
 Write-Host "Create a resource group: $resourceGroupName" -Foreground Green
@@ -20,17 +21,36 @@ az aks create `
     --resource-group $resourceGroupName `
     --node-resource-group $nodeResourceGroupName `
     --name $AKSClusterName `
-    --enable-managed-identity `
-    --vm-set-type VirtualMachineScaleSets `
+    --nodepool-name "nodepool1" `
     --node-count 1 `
-    --enable-addons monitoring `
-    --enable-msi-auth-for-monitoring `
     --generate-ssh-keys `
-    --load-balancer-sku standard 
+    --load-balancer-sku standard `
+    --node-vm-size Standard_B2s `
+    --os-sku Ubuntu
 
-# Connect to the cluster
-# 1) Install kubectl locally 
-az aks install-cli
+#############################################################################
+Write-Host "Add node pools." -Foreground Green
+az aks nodepool add `
+    --cluster-name $AKSClusterName `
+    --name "nodepool2" `
+    --resource-group $resourceGroupName `
+    --node-count 2 `
+    --node-vm-size Standard_B2s `
+    --os-sku Ubuntu
+
+############################################################################
+Write-Host "Create an Azure Container Registry." -Foreground Green
+az acr create `
+    --name $containerRegistryName `
+    --resource-group $resourceGroupName `
+    --sku Basic `
+    --admin-enabled true
+
+############################################################################
+# Push this image into your ACR (Azure Container registry)
+# Login to ACR
+az login
+az acr login --name $containerRegistryName 
 
 # 2) Configure kubectl to connect to your Kubernetes cluster
 az aks get-credentials --resource-group $resourceGroupName --name $AKSClusterName 
@@ -40,3 +60,11 @@ kubectl get nodes
 
 # 4) Deploy the application
 kubectl apply -f azure-vote.yaml
+
+# Create a tag for the image
+docker tag python-docker acrkubeepamlabdeveastus01.azurecr.io/python-docker:v1
+# Download the image to ACR
+docker push acrkubeepamlabdeveastus01.azurecr.io/python-docker:v1
+
+# List images of ACR
+az acr repository list --name acrkubeepamlabdeveastus01.azurecr.io --output table
